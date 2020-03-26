@@ -223,7 +223,7 @@ void MLX90621_CalculateTo(uint16_t *frameData, const paramsMLX90621 *params, flo
         irData = irData - params->tgc * irDataCP;
         irData = irData / emissivity;
         
-        alphaCompensated = params->alpha[pixelNumber] - params->tgc * irDataCP;
+        alphaCompensated = params->alpha[pixelNumber] - params->tgc * params->cpAlpha;
         alphaCompensated = alphaCompensated *(1 + params->KsTa * (ta - 25));
                     
         Sx = alphaCompensated * alphaCompensated * alphaCompensated * (irData + alphaCompensated * taTr);

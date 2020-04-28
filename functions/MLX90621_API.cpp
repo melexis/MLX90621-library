@@ -187,7 +187,6 @@ void MLX90621_CalculateTo(uint16_t *frameData, const paramsMLX90621 *params, flo
     float alphaCompensated;
     float Sx;
     float To;
-    float alphaScale;
     
     ta = MLX90621_GetTa(frameData, params);
     
@@ -244,8 +243,6 @@ void MLX90621_GetImage(uint16_t *frameData, const paramsMLX90621 *params, float 
     float irDataCP;
     float irData;
     float alphaCompensated;
-    
-    float alphaScale;
     
     ta = MLX90621_GetTa(frameData, params);
     
@@ -309,10 +306,11 @@ void ExtractPTATParameters(uint8_t *eeData, paramsMLX90621 *mlx90621)
 {
     float kt1;
     float kt2;
-    uint16_t vth25;
+    int16_t vth25;
     int kt1Scale = 0;
     int kt2Scale = 0;
     int resolution = 3;
+    uint16_t data;
     
     resolution = resolution - MLX90621_GetCurResolution();
     kt1Scale = (eeData[210] & 0xF0) >> 4;
@@ -321,11 +319,8 @@ void ExtractPTATParameters(uint8_t *eeData, paramsMLX90621 *mlx90621)
     kt1Scale = kt1Scale + resolution;
     kt2Scale = kt2Scale + resolution;
     
-    vth25 = (eeData[219]<<8) + eeData[218];
-    if (vth25 > 32767)
-    {
-        vth25 = vth25 - 65536;
-    }
+    data = (eeData[219]<<8) + eeData[218];
+    vth25 = data;
     
     kt1 = (eeData[221]<<8) + eeData[220];
     if (kt1 > 32767)
@@ -436,17 +431,15 @@ void ExtractOffsetParameters(uint8_t *eeData, paramsMLX90621 *mlx90621)
     int16_t aCom;
     float aTemp;
     float bTemp;
+    uint16_t data;
     
     aScale = eeData[217]>>4;
     bScale = eeData[217] & 0x0F;
     resScale = 3 - MLX90621_GetCurResolution();
     bScale = pow(2, (double)(bScale+resScale));
     
-    aCom = (eeData[209]<<8) + eeData[208];
-    if(aCom > 32767)
-    {
-        aCom = aCom - 65536;
-    }
+    data = (eeData[209]<<8) + eeData[208];
+    aCom = data;    
 
     for(int i=0; i<64; i++)
     {

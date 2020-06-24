@@ -149,7 +149,7 @@ int MLX90621_SetRefreshRate(uint8_t refreshRate)
         
     if(error == 0)
     {
-        value = (cfgReg & 0x000F) | value;
+        value = (cfgReg & 0xFFF0) | value;
         error = MLX90621_I2CWrite(0x60, 0x03, 0x55, value);        
     }    
     
